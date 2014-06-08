@@ -1,7 +1,6 @@
 package edu.vuum.mocca;
 
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
 
 /**
@@ -20,6 +19,10 @@ public class SimpleSemaphore {
                             boolean fair)
     { 
         // TODO - you fill in here
+    	this.permits = permits;
+    	lock = new ReentrantLock(fair);
+    	permitAvailable = lock.newCondition();
+    	
     }
 
     /**
@@ -28,6 +31,16 @@ public class SimpleSemaphore {
      */
     public void acquire() throws InterruptedException {
         // TODO - you fill in here
+    	final ReentrantLock lock = this.lock;
+    	lock.lockInterruptibly();
+    	try {
+    		while (permits == 0) 
+    			permitAvailable.await();
+    		permits--;
+    	} finally {
+    		lock.unlock();
+    	}
+    	
     }
 
     /**
@@ -36,6 +49,15 @@ public class SimpleSemaphore {
      */
     public void acquireUninterruptibly() {
         // TODO - you fill in here
+    	final ReentrantLock lock = this.lock;
+    	lock.lock();
+    	try {
+    		while (permits == 0) 
+    			permitAvailable.awaitUninterruptibly();
+    		permits--;
+    	} finally {
+    		lock.unlock();
+    	}
     }
 
     /**
@@ -43,6 +65,14 @@ public class SimpleSemaphore {
      */
     void release() {
         // TODO - you fill in here
+    	final ReentrantLock lock = this.lock;
+    	lock.lock();
+    	try {
+    		permits++;
+    		permitAvailable.signal();
+    	} finally {
+    		lock.unlock();
+    	}
     }
     
     /**
@@ -50,23 +80,33 @@ public class SimpleSemaphore {
      */
     public int availablePermits(){
     	// TODO - you fill in here
-    	return 0; // You will change this value. 
+    	final ReentrantLock lock = this.lock;
+    	try {
+    		lock.lock();
+    		int availablePermits = permits;
+    		return availablePermits;
+    	} finally {
+    		lock.unlock();
+    	}
     }
     
     /**
      * Define a ReentrantLock to protect the critical section.
      */
     // TODO - you fill in here
+    private final ReentrantLock lock;
 
     /**
      * Define a ConditionObject to wait while the number of
      * permits is 0.
      */
     // TODO - you fill in here
+    private final Condition permitAvailable;
 
     /**
      * Define a count of the number of available permits.
      */
     // TODO - you fill in here
+    private int permits;
 }
 
