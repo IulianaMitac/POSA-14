@@ -1,6 +1,7 @@
 package edu.vuum.mocca;
 
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
 
 /**
@@ -16,27 +17,38 @@ public class SimpleSemaphore {
     /**
      * Define a Lock to protect the critical section.
      */
-<<<<<<< HEAD
-    public SimpleSemaphore (int permits,
-                            boolean fair)
-    { 
-        // TODO - you fill in here
-    	this.permits = permits;
-    	lock = new ReentrantLock(fair);
-    	permitAvailable = lock.newCondition();
-    	
-    }
-=======
     // TODO - you fill in here
->>>>>>> upstream/master
+	private final ReentrantLock lock;
 
     /**
      * Define a Condition that waits while the number of permits is 0.
      */
-<<<<<<< HEAD
+    // TODO - you fill in here
+	private final Condition permitAvailable;
+	
+    /**
+     * Define a count of the number of available permits.
+     */
+    // TODO - you fill in here.  Make sure that this data member will
+    // ensure its values aren't cached by multiple Threads..
+	private volatile int permits;
+
+    public SimpleSemaphore(int permits, boolean fair) {
+        // TODO - you fill in here to initialize the SimpleSemaphore,
+        // making sure to allow both fair and non-fair Semaphore
+        // semantics.
+		this.permits = permits;
+    	lock = new ReentrantLock(fair);
+    	permitAvailable = lock.newCondition();
+    }
+
+    /**
+     * Acquire one permit from the semaphore in a manner that can be
+     * interrupted.
+     */
     public void acquire() throws InterruptedException {
-        // TODO - you fill in here
-    	final ReentrantLock lock = this.lock;
+        // TODO - you fill in here.
+		final ReentrantLock lock = this.lock;
     	lock.lockInterruptibly();
     	try {
     		while (permits == 0) 
@@ -45,18 +57,14 @@ public class SimpleSemaphore {
     	} finally {
     		lock.unlock();
     	}
-    	
     }
-=======
-    // TODO - you fill in here
->>>>>>> upstream/master
 
     /**
-     * Define a count of the number of available permits.
+     * Acquire one permit from the semaphore in a manner that cannot be
+     * interrupted.
      */
-<<<<<<< HEAD
     public void acquireUninterruptibly() {
-        // TODO - you fill in here
+        // TODO - you fill in here.
     	final ReentrantLock lock = this.lock;
     	lock.lock();
     	try {
@@ -66,24 +74,13 @@ public class SimpleSemaphore {
     	} finally {
     		lock.unlock();
     	}
-=======
-    // TODO - you fill in here.  Make sure that this data member will
-    // ensure its values aren't cached by multiple Threads..
-
-    public SimpleSemaphore(int permits, boolean fair) {
-        // TODO - you fill in here to initialize the SimpleSemaphore,
-        // making sure to allow both fair and non-fair Semaphore
-        // semantics.
->>>>>>> upstream/master
     }
 
     /**
-     * Acquire one permit from the semaphore in a manner that can be
-     * interrupted.
+     * Return one permit to the semaphore.
      */
-<<<<<<< HEAD
-    void release() {
-        // TODO - you fill in here
+    public void release() {
+		// TODO - you fill in here
     	final ReentrantLock lock = this.lock;
     	lock.lock();
     	try {
@@ -92,63 +89,14 @@ public class SimpleSemaphore {
     	} finally {
     		lock.unlock();
     	}
-=======
-    public void acquire() throws InterruptedException {
-        // TODO - you fill in here.
->>>>>>> upstream/master
     }
-
-    /**
-     * Acquire one permit from the semaphore in a manner that cannot be
-     * interrupted.
-     */
-<<<<<<< HEAD
-    public int availablePermits(){
-    	// TODO - you fill in here
-    	final ReentrantLock lock = this.lock;
-    	try {
-    		lock.lock();
-    		int availablePermits = permits;
-    		return availablePermits;
-    	} finally {
-    		lock.unlock();
-    	}
-    }
-    
-    /**
-     * Define a ReentrantLock to protect the critical section.
-     */
-    // TODO - you fill in here
-    private final ReentrantLock lock;
-=======
-    public void acquireUninterruptibly() {
-        // TODO - you fill in here.
-    }
->>>>>>> upstream/master
-
-    /**
-     * Return one permit to the semaphore.
-     */
-<<<<<<< HEAD
-    // TODO - you fill in here
-    private final Condition permitAvailable;
-=======
-    public void release() {
-        // TODO - you fill in here.
-    }
->>>>>>> upstream/master
 
     /**
      * Return the number of permits available.
      */
-<<<<<<< HEAD
-    // TODO - you fill in here
-    private int permits;
-=======
     public int availablePermits() {
         // TODO - you fill in here by changing null to the appropriate
         // return value.
-        return null;
+   		return permits;
     }
->>>>>>> upstream/master
 }
