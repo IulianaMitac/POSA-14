@@ -83,6 +83,7 @@ class SimpleAtomicLong
         	return mValue++;
         } finally {
         	myWriteLock.unlock();
+        }
     }
 
     /**
